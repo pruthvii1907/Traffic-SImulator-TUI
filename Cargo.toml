@@ -1,0 +1,32 @@
+[package]
+name = "traffic-tui"
+version = "0.1.0"
+edition = "2021"
+description = "A lively ASCII traffic simulator for your terminal"
+
+# The simulation + renderer live in a library with zero UI dependencies.
+# That lets the exact same code run in the terminal (ratatui) AND in the
+# browser (compiled to WebAssembly).
+[lib]
+name = "traffic"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "traffic-tui"
+path = "src/main.rs"
+required-features = ["tui"]
+
+[features]
+default = ["tui"]
+tui = ["dep:ratatui"]
+
+[dependencies]
+ratatui = { version = "0.30", optional = true }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
